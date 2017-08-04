@@ -3,7 +3,22 @@ package com.sagepay.bankocr.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AsciiArtCharacter {
+import com.sagepay.bankocr.base.ICharacterRepresenter;
+
+/**
+ * 
+ * AsciiArtCharacter is a simple 3 by 3 characters ASCI Art representation of a Character
+ * It uses bit shifting as a character recognition technique.
+ * The default recognized characters are:
+ * 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 and A
+ * They are represented by:
+ *   _     _  _     _  _  _  _  _  _ 
+ *  | |  | _| _||_||_ |_   ||_||_||_|
+ *  |_|  ||_  _|  | _||_|  ||_| _|| |
+ * @author adi
+ *
+ */
+public class AsciiArtCharacter implements ICharacterRepresenter{
 	
 	private final byte lines[];	
 	private final Map<Byte, Character> knownCharacters = new HashMap<Byte,Character>();
@@ -28,6 +43,15 @@ public class AsciiArtCharacter {
 	}
 	
 	/**
+	 * Allows you to add or modify the existing values for character representation
+	 * @param value 	the byte value that will result after the bit shifting step
+	 * @param character the character represented by the value 
+	 */
+	public void setCharacterValue(byte value, char character){
+		knownCharacters.put(value, character);
+	}
+	
+	/**
 	 * setLine will set the lines(chars, both vertical and horizontal) 
 	 * into the specified position as they are found in the 
 	 * AsciiArt character
@@ -44,6 +68,11 @@ public class AsciiArtCharacter {
 	//we only care if we have a | or a _ in the right position
 	public void setLine(int xAxis, int yAxis, char value) {
 		if(xAxis<3 && yAxis<3) {
+			//we do not support 1 on the first line first position as this would overflow byte.
+			//we could use integer, but it is not the case in this simple class
+			if(xAxis==0 && yAxis==0){
+				value=' ';
+			}
 			//if we have a worthy character, we bit shift it into position
 			if(value != ' ') {
 				byte pos = 1; 

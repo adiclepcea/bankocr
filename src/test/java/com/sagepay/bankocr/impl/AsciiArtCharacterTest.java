@@ -21,6 +21,42 @@ public class AsciiArtCharacterTest {
 	}
 	
 	@Test
+	public void TestCharacaterInFirstPos(){
+		asciiArtCharacter.setLine(0, 0, '|'); //this should be ignored
+		asciiArtCharacter.setLine(1, 0, '_');
+		asciiArtCharacter.setLine(2, 0, ' ');
+		asciiArtCharacter.setLine(0, 1, '|');
+		asciiArtCharacter.setLine(1, 1, '_');
+		asciiArtCharacter.setLine(2, 1, '|');
+		asciiArtCharacter.setLine(0, 2, '|');
+		asciiArtCharacter.setLine(1, 2, ' ');
+		asciiArtCharacter.setLine(2, 2, '|');
+		assertEquals(new Character('A'),asciiArtCharacter.getRepresentation());
+	}
+	
+	@Test
+	public void TestSetCharacterValue(){
+		//character b 
+		//        line 1 = (000) 0 << 6  	
+		// |_     line 2 = (110) 6 << 3  	
+		// |_|    line 3 = (111) 7
+		//
+		// 000 110 111 = 55
+		asciiArtCharacter.setCharacterValue((byte)55, 'b');
+		asciiArtCharacter.setLine(0, 0, ' ');
+		asciiArtCharacter.setLine(1, 0, ' ');
+		asciiArtCharacter.setLine(2, 0, ' ');
+		asciiArtCharacter.setLine(0, 1, '|');
+		asciiArtCharacter.setLine(1, 1, '_');
+		asciiArtCharacter.setLine(2, 1, ' ');
+		asciiArtCharacter.setLine(0, 2, '|');
+		asciiArtCharacter.setLine(1, 2, '_');
+		asciiArtCharacter.setLine(2, 2, '|');
+		assertEquals(new Character('b'),asciiArtCharacter.getRepresentation());
+
+	}
+	
+	@Test
 	public void TestCharacterA() {
 		asciiArtCharacter.setLine(0, 0, ' ');
 		asciiArtCharacter.setLine(1, 0, '_');

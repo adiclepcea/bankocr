@@ -2,9 +2,13 @@ package com.sagepay.bankocr.impl;
 
 import org.junit.Test;
 
+import com.sagepay.bankocr.base.ICharacterRepresenter;
 import com.sagepay.bankocr.base.InvalidSourceException;
 
 import static org.junit.Assert.*;
+
+import java.util.Arrays;
+
 import org.junit.Before;
 
 
@@ -21,6 +25,14 @@ public class AsciiArtToStringArrayParserTest {
             " _     _  _     _  _  _  _  _ \n" +
             "| |  | _| _||_||_ |_   ||_||_|\n" +
             "|_|  ||_  _|  | _||_|  ||_| _|";
+	
+	public static String getStringRepresentation(ICharacterRepresenter[] chars){
+		StringBuffer sbResult = new StringBuffer();
+		
+		Arrays.stream(chars).forEach(chr->sbResult.append(chr.getRepresentation()));
+		
+		return sbResult.toString();
+	}
 	
 	@Before
 	public void init() {
@@ -59,16 +71,16 @@ public class AsciiArtToStringArrayParserTest {
 	
 	@Test(expected=InvalidSourceException.class)
 	public void TestParseNull() throws InvalidSourceException {
-		asciiArtParser.parse(null);
+		asciiArtParser.parse(null,null);
 	}
 	
 	@Test
 	public void TestParseValidDimensions() {
 		try {
-			String result = asciiArtParser.parse(testString);
+			String result = getStringRepresentation(asciiArtParser.parse(testString,AsciiArtCharacter.class));
 			assertEquals("1234", result);
 			
-			result = asciiArtParser.parse(testLong);
+			result = getStringRepresentation(asciiArtParser.parse(testLong,AsciiArtCharacter.class));
 			assertEquals("0123456789", result);
 		}catch(InvalidSourceException ise){
 			fail("No exception expected while parsing a valid string. Got: " + ise.getMessage());

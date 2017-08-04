@@ -1,9 +1,11 @@
 package com.sagepay.bankocr.impl;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import com.sagepay.bankocr.base.ICharacterRepresenter;
 import com.sagepay.bankocr.base.IParser;
 import com.sagepay.bankocr.base.InvalidSourceException;
 
@@ -22,43 +24,63 @@ import com.sagepay.bankocr.base.InvalidSourceException;
  *  </ul>
  * </li>
  * <li>There should be exactly three lines in the string</li>
- * <li>The number of characters in each line should be a multiple of 3</li>
+ * <li>The number of characters in each line should be a multiple of charWidth. Default charWidth is 3.</li>
  * </ol>
  * @author adic
  */
-public class AsciiArtToCharacterArrayParser implements IParser<String,String> {
+public class AsciiArtToCharacterArrayParser implements IParser<String,ICharacterRepresenter> {
 	
 	private String lines[];
 	private String hint;
 	private final List<Character> acceptedCharacters = Arrays.asList('|',' ','_');
+	private int charWidth; //the width of the character representation
+	private int charHeight; //the width of the character representation
 	
 	/**
-	 * @param source is a String that will be converted to a String[]
+	 * Default constructor. This will set the width and the height of the
+	 * representation to 3
 	 */
-	public String parse(String source) throws InvalidSourceException{
+	public AsciiArtToCharacterArrayParser(){
+		this(3,3);
+	}
+	
+	/**
+	 * Constructor with width and height parameters for the character representation
+	 * You should use this if you have an ICharacterRepresenter implementer that is not 3 by 3 chars.
+	 * Please note that such an ICharacterRepresenter implementation is not shipped with this library 
+	 * @param charWidth
+	 * @param charHeight
+	 */
+	public AsciiArtToCharacterArrayParser(int charWidth, int charHeight){
+		this.charWidth = charWidth;
+		this.charHeight = charHeight;
+	}
+	
+	/**
+	 * @param source is a String that will be converted to a ICharacterRepresenter[]
+	 */
+	public ICharacterRepresenter[] parse(String source,Class <? extends ICharacterRepresenter> c) throws InvalidSourceException{
 		if(!accept(source)) {
 			throw new InvalidSourceException("The string you have passed is not valid. Cause: "+hint);
 		}
 		
-		AsciiArtCharacter asciiChars[] = new AsciiArtCharacter[lines[0].length()/3];
+		ICharacterRepresenter asciiChars[] = (ICharacterRepresenter [])Array.newInstance(c, lines[0].length()/charWidth);
 		
-		for(int y=0;y<3;y++) {
+		for(int y=0;y<charHeight;y++) {
 			char[] lineChars = lines[y].toCharArray();
-			for(int x=0;x<lineChars.length;x+=3) {
-				if(asciiChars[x/3]==null) {
-					asciiChars[x/3] = new AsciiArtCharacter();
+			for(int x=0;x<lineChars.length;x+=charWidth) {
+				int charIndex = x/charWidth; 
+				if(asciiChars[charIndex]==null) {
+					asciiChars[charIndex] = new AsciiArtCharacter();
 				}
-				asciiChars[x/3].setLine(x%3, y, lineChars[x]);
-				asciiChars[x/3].setLine(x%3+1, y, lineChars[x+1]);
-				asciiChars[x/3].setLine(x%3+2, y, lineChars[x+2]);
+				asciiChars[charIndex].setLine(x%charWidth, y, lineChars[x]);
+				asciiChars[charIndex].setLine(x%charWidth+1, y, lineChars[x+1]);
+				asciiChars[charIndex].setLine(x%charWidth+2, y, lineChars[x+2]);
 			}
 		}
 		
-		StringBuffer sbResult = new StringBuffer();
 		
-		Arrays.stream(asciiChars).forEach(chr->sbResult.append(chr.getRepresentation()));
-		
-		return sbResult.toString();
+		return asciiChars;
 	}
 	
 	/**
@@ -95,16 +117,16 @@ public class AsciiArtToCharacterArrayParser implements IParser<String,String> {
 		}
 		this.lines = source.split("\n");
 				
-		//we should have exactly 3 lines in the string
-		if(lines.length!=3) {
-			this.hint="Exactly 3 lines expected. Got "+lines.length;
+		//we should have exactly charHeight lines in the string
+		if(lines.length!=charHeight) {
+			this.hint="Exactly "+charHeight+" lines expected. Got "+lines.length;
 			return false;
 		}
 		
 		int lineLength=lines[0].length();
 		
-		//each character occupied 3 places
-		if(lineLength%3!=0) {
+		//each character occupied charWidth places
+		if(lineLength%charWidth!=0) {
 			this.hint="Incorrect line length";
 			return false;
 		}

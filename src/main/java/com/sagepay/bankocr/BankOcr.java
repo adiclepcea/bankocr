@@ -1,9 +1,11 @@
 package com.sagepay.bankocr;
 
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sagepay.bankocr.base.InvalidSourceException;
+import com.sagepay.bankocr.impl.AsciiArtCharacter;
 import com.sagepay.bankocr.impl.AsciiArtToCharacterArrayParser;
 
 public class BankOcr {
@@ -18,7 +20,11 @@ public class BankOcr {
 	}
 	
 	public String recognize(String strFromRevolutioaryMachine) throws InvalidSourceException {
-		return parser.parse(strFromRevolutioaryMachine);
+		StringBuffer sbResult = new StringBuffer();
+		
+		Arrays.stream(parser.parse(strFromRevolutioaryMachine,AsciiArtCharacter.class)).forEach(chr->sbResult.append(chr.getRepresentation()));
+		
+		return sbResult.toString();
 	}
 	public static void main(String ...args) {
 		BankOcr bankOcr = new BankOcr();
