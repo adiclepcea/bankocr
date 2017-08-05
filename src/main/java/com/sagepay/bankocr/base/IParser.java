@@ -14,6 +14,6 @@ public interface IParser<U,T> extends IConditionChecker<U> {
 	 * @param source defines the data source for the initial 
 	 * data. The returned value is of type T, as needed by the implementer.
 	 */
-	public T[] parse(U source, Class < ? extends T> c) throws InvalidSourceException;
+	public T[] parse(U source, Class < ? extends T> c) throws InvalidSourceException, InstantiationException, IllegalAccessException;
 
 }

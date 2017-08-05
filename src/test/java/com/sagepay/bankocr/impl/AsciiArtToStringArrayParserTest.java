@@ -70,17 +70,17 @@ public class AsciiArtToStringArrayParserTest {
 	
 	
 	@Test(expected=InvalidSourceException.class)
-	public void TestParseNull() throws InvalidSourceException {
+	public void TestParseNull() throws InvalidSourceException, InstantiationException, IllegalAccessException {
 		asciiArtParser.parse(null,null);
 	}
 	
 	@Test
-	public void TestParseValidDimensions() {
+	public void TestParseValidDimensions() throws InstantiationException, IllegalAccessException {
 		try {
-			String result = getStringRepresentation(asciiArtParser.parse(testString,AsciiArtCharacter.class));
+			String result = getStringRepresentation(asciiArtParser.parse(testString,AsciiArtCharacter3x3.class));
 			assertEquals("1234", result);
 			
-			result = getStringRepresentation(asciiArtParser.parse(testLong,AsciiArtCharacter.class));
+			result = getStringRepresentation(asciiArtParser.parse(testLong,AsciiArtCharacter3x3.class));
 			assertEquals("0123456789", result);
 		}catch(InvalidSourceException ise){
 			fail("No exception expected while parsing a valid string. Got: " + ise.getMessage());

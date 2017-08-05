@@ -5,8 +5,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sagepay.bankocr.base.InvalidSourceException;
-import com.sagepay.bankocr.impl.AsciiArtCharacter;
+import com.sagepay.bankocr.impl.AsciiArtCharacter3x3;
 import com.sagepay.bankocr.impl.AsciiArtToCharacterArrayParser;
+import com.sagepay.bankocr.impl.SimpleAsciiArtCharacter;
 
 public class BankOcr {
 	private static final String testLong =
@@ -19,18 +20,30 @@ public class BankOcr {
 		
 	}
 	
-	public String recognize(String strFromRevolutioaryMachine) throws InvalidSourceException {
+	public String recognize3x3(String strFromRevolutionaryMachine) throws InvalidSourceException, InstantiationException, IllegalAccessException {
 		StringBuffer sbResult = new StringBuffer();
 		
-		Arrays.stream(parser.parse(strFromRevolutioaryMachine,AsciiArtCharacter.class)).forEach(chr->sbResult.append(chr.getRepresentation()));
+		Arrays.stream(parser.parse(strFromRevolutionaryMachine,AsciiArtCharacter3x3.class))
+			.forEach(chr->sbResult.append(chr.getRepresentation()));
 		
 		return sbResult.toString();
 	}
+	
+	public String recognizeSimple(String strFromRevolutionaryMachine) throws InvalidSourceException, InstantiationException, IllegalAccessException {
+		StringBuffer sbResult = new StringBuffer();
+		
+		Arrays.stream(parser.parse(strFromRevolutionaryMachine,SimpleAsciiArtCharacter.class))
+			.forEach(chr->sbResult.append(chr.getRepresentation()));
+		
+		return sbResult.toString();
+	}
+	
 	public static void main(String ...args) {
 		BankOcr bankOcr = new BankOcr();
 		try {
-			System.out.println(String.format("Revolutionary machine sent us:\n%s \nWe translated it to:\n%s", testLong, bankOcr.recognize(testLong)));
-		}catch(InvalidSourceException ise) {
+			System.out.println(String.format("Revolutionary machine sent us:\n%s \nAsciiArtCharacter3x3 translated it to:\n%s", testLong, bankOcr.recognize3x3(testLong)));
+			System.out.println(String.format("Revolutionary machine sent us:\n%s \nSimpleAsciiArtChracter translated it to:\n%s", testLong, bankOcr.recognizeSimple(testLong)));
+		}catch(InvalidSourceException | InstantiationException | IllegalAccessException ise) {
 			logger.log(Level.SEVERE, ise.getMessage(), ise);
 		}
 	}

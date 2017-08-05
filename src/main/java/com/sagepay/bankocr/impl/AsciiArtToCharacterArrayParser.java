@@ -58,8 +58,10 @@ public class AsciiArtToCharacterArrayParser implements IParser<String,ICharacter
 	
 	/**
 	 * @param source is a String that will be converted to a ICharacterRepresenter[]
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public ICharacterRepresenter[] parse(String source,Class <? extends ICharacterRepresenter> c) throws InvalidSourceException{
+	public ICharacterRepresenter[] parse(String source,Class <? extends ICharacterRepresenter> c) throws InvalidSourceException, InstantiationException, IllegalAccessException{
 		if(!accept(source)) {
 			throw new InvalidSourceException("The string you have passed is not valid. Cause: "+hint);
 		}
@@ -71,7 +73,7 @@ public class AsciiArtToCharacterArrayParser implements IParser<String,ICharacter
 			for(int x=0;x<lineChars.length;x+=charWidth) {
 				int charIndex = x/charWidth; 
 				if(asciiChars[charIndex]==null) {
-					asciiChars[charIndex] = new AsciiArtCharacter();
+					asciiChars[charIndex] = c.newInstance();
 				}
 				asciiChars[charIndex].setLine(x%charWidth, y, lineChars[x]);
 				asciiChars[charIndex].setLine(x%charWidth+1, y, lineChars[x+1]);

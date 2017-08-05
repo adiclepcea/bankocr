@@ -6,12 +6,12 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 
-public class AsciiArtCharacterTest {
-	AsciiArtCharacter asciiArtCharacter;
+public class AsciiArtCharacter3x3Test {
+	AsciiArtCharacter3x3 asciiArtCharacter;
 	
 	@Before
 	public void init() {
-		asciiArtCharacter = new AsciiArtCharacter();
+		asciiArtCharacter = new AsciiArtCharacter3x3();
 	}
 	@Test
 	public void TestCharacterNotFound() {

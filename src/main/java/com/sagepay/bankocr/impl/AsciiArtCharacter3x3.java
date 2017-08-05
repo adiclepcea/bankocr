@@ -18,7 +18,7 @@ import com.sagepay.bankocr.base.ICharacterRepresenter;
  * @author adi
  *
  */
-public class AsciiArtCharacter implements ICharacterRepresenter{
+public class AsciiArtCharacter3x3 implements ICharacterRepresenter{
 	
 	private final byte lines[];	
 	private final Map<Byte, Character> knownCharacters = new HashMap<Byte,Character>();
@@ -26,7 +26,7 @@ public class AsciiArtCharacter implements ICharacterRepresenter{
 	/**
 	 * Constructor for AsciiArtCharacter
 	 */
-	public AsciiArtCharacter() {
+	public AsciiArtCharacter3x3() {
 		//we just set the values as calculated for the recognized characters
 		knownCharacters.put((byte)189, 'A');
 		knownCharacters.put((byte)9, '1');
